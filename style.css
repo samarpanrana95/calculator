@@ -43,11 +43,15 @@ body {
     color : #00000090;
     font-weight : normal;
     font-size : 1.15rem;
+
+    visibility: hidden;
 }
 
 .display-main-text {
     font-weight : bolder;
     font-size : 1.5rem;
+
+    visibility: hidden;
 }
 
 .buttons-container {
