@@ -58,15 +58,33 @@ let initialNumber,
   isInitialized = false,
   currentResult;
 
+function resetCalculator () {
+  initialNumber = undefined;
+  finalNumber = undefined;
+  currentOperation = undefined;
+  isInitialized = false;
+  currentOperation = undefined;
+}
+
+function resetCalculatorDom () {
+  let displayPrevText = document.querySelector(".display-prev-text");
+  displayPrevText.textContent = 0
+  displayPrevText.style.visibility = "hidden";
+  let displayMainText = document.querySelector(".display-main-text");
+  displayMainText.textContent = 0;
+  displayMainText.style.visibility = "hidden";
+}
+
+
 let buttons = document.querySelectorAll(".button");
 let buttonsContainer = document.querySelector(".buttons-container");
 buttonsContainer.addEventListener("click", (e) => {
   let target = e.target;
   let targetClassList = target.classList;
   if (targetClassList.contains("clear-button")) {
-    console.log("cleared");
+    clearNumber();
   } else if (targetClassList.contains("delete-button")) {
-    console.log("deleted");
+    deleteNumber();
   } else if (targetClassList.contains("equals-button")) {
     if (
       initialNumber == undefined ||
@@ -90,6 +108,15 @@ buttonsContainer.addEventListener("click", (e) => {
     updateNumber(pressedNumber);
   }
 });
+
+function clearNumber () {
+  resetCalculator();
+  resetCalculatorDom();
+}
+
+function deleteNumber () {
+
+}
 
 function checkDecimal () {
   if (initialNumber == undefined) {
