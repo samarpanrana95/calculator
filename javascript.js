@@ -56,7 +56,8 @@ let initialNumber,
   finalNumber,
   currentOperation,
   isInitialized = false,
-  currentResult;
+  currentResult,
+  isShowingResult = false
 
 function resetCalculator () {
   initialNumber = undefined;
@@ -64,6 +65,7 @@ function resetCalculator () {
   currentOperation = undefined;
   isInitialized = false;
   currentOperation = undefined;
+  isShowingResult = false;
 }
 
 function resetCalculatorDom () {
@@ -115,7 +117,46 @@ function clearNumber () {
 }
 
 function deleteNumber () {
-
+  if (isShowingResult) {
+    if (typeof finalNumber == 'number' && finalNumber != 0) {
+      if (finalNumber.length == 1) {
+        finalNumber = '0';
+      }
+      else {
+        finalNumber = finalNumber.toString().slice(0, finalNumber.length-1)
+      }
+    }
+    else if (typeof initialNumber == 'string') {
+      if (initialNumber.length == 1) {
+        initialNumber = '0';
+      }
+      else {
+        initialNumber = initialNumber.toString().slice(0, initialNumber.length-1)
+      }
+    }
+    
+  updateDeleteNumberDom();
+  }
+  else {
+    if (isInitialized && typeof finalNumber == 'number' && finalNumber != 0) {
+      if (finalNumber.length == 1) {
+        finalNumber = '0';
+      }
+      else {
+        finalNumber = finalNumber.toString().slice(0, finalNumber.length-1)
+      }
+    }
+    else if (!(isInitialized) && typeof initialNumber == 'string') {
+      if (initialNumber.length == 1) {
+        initialNumber = '0';
+      }
+      else {
+        initialNumber = initialNumber.toString().slice(0, initialNumber.length-1)
+      }
+    }
+    
+  updateNumberDom();
+  }
 }
 
 function checkDecimal () {
@@ -140,9 +181,11 @@ function checkDecimal () {
 
 function updateResult(result) {
   currentResult = result;
-  initialNumber = result;
+  initialNumber = result.toString();
   updateResultDom(result);
+  isInitialized = true;
   finalNumber = 0;
+  isShowingResult = true;
 }
 
 function updateResultDom(result) {
@@ -174,6 +217,7 @@ function getOperation(target) {
 function updatePressedOperation(pressedOperation, target) {
   currentOperation = pressedOperation;
   isInitialized = true;
+  isShowingResult = false;
   updatePressedOperationDom(currentOperation, target);
 }
 
@@ -211,4 +255,10 @@ function updateNumberDom() {
   } else {
     displayMainText.textContent = initialNumber;
   }
+}
+
+function updateDeleteNumberDom() {
+  let displayMainText = document.querySelector(".display-main-text");
+  displayMainText.style.visibility = "visible";
+  displayMainText.textContent = initialNumber;
 }
