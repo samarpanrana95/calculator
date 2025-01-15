@@ -1,9 +1,17 @@
 function add(num1, num2) {
-  return num1 + num2;
+  let result = num1 + num2;
+  if (!Number.isInteger(result)) {
+    result = result.toFixed(2);
+  }
+  return result;
 }
 
 function diff(num1, num2) {
-  return num1 - num2;
+  let result = num1 - num2;
+  if (!Number.isInteger(result)) {
+    result = result.toFixed(2);
+  }
+  return result;
 }
 
 function mul(num1, num2) {
@@ -73,10 +81,35 @@ buttonsContainer.addEventListener("click", (e) => {
     let pressedOperation = getOperation(target);
     updatePressedOperation(pressedOperation, target);
   } else if (targetClassList.contains("number-button")) {
+    if (target.textContent == '.') {
+      if (checkDecimal()) {
+        return;
+      };
+    }
     let pressedNumber = getNumber(target);
     updateNumber(pressedNumber);
   }
 });
+
+function checkDecimal () {
+  if (initialNumber == undefined) {
+  }
+  else {
+    if (initialNumber.toString().includes('.') && (!(isInitialized)) ) {
+      return true;
+    }
+  }
+
+  if (finalNumber == undefined) {
+  }
+  else {
+    if (finalNumber.toString().includes('.') && (isInitialized)) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 function updateResult(result) {
   currentResult = result;
