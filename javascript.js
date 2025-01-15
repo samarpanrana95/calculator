@@ -7,27 +7,35 @@ function diff(num1, num2) {
 }
 
 function mul(num1, num2) {
-  return num1 * num2;
+  let result = num1 * num2;
+  if (!Number.isInteger(result)) {
+    result = result.toFixed(2);
+  }
+  return result;
 }
 
 function divide(num1, num2) {
-  return ((num1 * 10) / (num2 * 10)).toFixed(2);
+  let result = num1 / num2;
+  if (!Number.isInteger(result)) {
+    result = result.toFixed(2);
+  }
+  return result;
 }
 
 function operate(num1, num2, operator) {
   let result;
   switch (operator) {
-    case "+":
-      result = add(num1, num2);
+    case "add":
+      result = add(+num1, +num2);
       break;
-    case "-":
-      result = diff(num1, num2);
+    case "diff":
+      result = diff(+num1, +num2);
       break;
-    case "*":
-      result = mul(num1, num2);
+    case "mul":
+      result = mul(+num1, +num2);
       break;
-    case "/":
-      result = divide(num1, num2);
+    case "divide":
+      result = divide(+num1, +num2);
       break;
     default:
       result = "ERROR";
@@ -36,7 +44,11 @@ function operate(num1, num2, operator) {
   return result;
 }
 
-let initialNumber, finalNumber, currentOperation;
+let initialNumber,
+  finalNumber,
+  currentOperation,
+  isInitialized = false,
+  currentResult;
 
 let buttons = document.querySelectorAll(".button");
 let buttonsContainer = document.querySelector(".buttons-container");
@@ -48,15 +60,42 @@ buttonsContainer.addEventListener("click", (e) => {
   } else if (targetClassList.contains("delete-button")) {
     console.log("deleted");
   } else if (targetClassList.contains("equals-button")) {
-    console.log("equals");
+    if (
+      initialNumber == undefined ||
+      finalNumber == undefined ||
+      currentOperation == undefined
+    ) {
+      return;
+    }
+    let result = operate(initialNumber, finalNumber, currentOperation);
+    updateResult(result);
   } else if (targetClassList.contains("operation-button")) {
     let pressedOperation = getOperation(target);
     updatePressedOperation(pressedOperation, target);
   } else if (targetClassList.contains("number-button")) {
     let pressedNumber = getNumber(target);
-    updateInitialNumber(pressedNumber);
+    updateNumber(pressedNumber);
   }
 });
+
+function updateResult(result) {
+  currentResult = result;
+  initialNumber = result;
+  updateResultDom(result);
+  finalNumber = 0;
+}
+
+function updateResultDom(result) {
+  let displayPrevText = document.querySelector(".display-prev-text");
+  if (finalNumber != 0) {
+    displayPrevText.textContent =
+      displayPrevText.textContent + finalNumber + "=";
+  }
+  displayPrevText.style.visibility = "visible";
+  let displayMainText = document.querySelector(".display-main-text");
+  displayMainText.textContent = result;
+  displayMainText.style.visibility = "visible";
+}
 
 function getOperation(target) {
   let targetText = target.textContent;
@@ -74,6 +113,7 @@ function getOperation(target) {
 
 function updatePressedOperation(pressedOperation, target) {
   currentOperation = pressedOperation;
+  isInitialized = true;
   updatePressedOperationDom(currentOperation, target);
 }
 
@@ -90,18 +130,25 @@ function getNumber(target) {
   return target.textContent;
 }
 
-function updateInitialNumber(pressedNumber) {
-  if (typeof initialNumber == "string") {
-    initialNumber += pressedNumber;
+function updateNumber(pressedNumber) {
+  if (isInitialized) {
+    typeof finalNumber == "string"
+      ? (finalNumber += pressedNumber)
+      : (finalNumber = pressedNumber);
   } else {
-    initialNumber = pressedNumber;
+    typeof initialNumber == "string"
+      ? (initialNumber += pressedNumber)
+      : (initialNumber = pressedNumber);
   }
-
-  updateInitialNumberDom();
+  updateNumberDom();
 }
 
-function updateInitialNumberDom() {
+function updateNumberDom() {
   let displayMainText = document.querySelector(".display-main-text");
   displayMainText.style.visibility = "visible";
-  displayMainText.textContent = initialNumber;
+  if (isInitialized) {
+    displayMainText.textContent = finalNumber;
+  } else {
+    displayMainText.textContent = initialNumber;
+  }
 }
